@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Análisis Comparativo: Consumo Eléctrico | UAC</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                        display: ['Space Grotesk', 'sans-serif'],
+                    },
+                    colors: {
+                        obsidian: '#0B0C10',
+                        charcoal: '#1F2833',
+                        cyan: { DEFAULT: '#66FCF1', dim: '#45A29E' },
+                        slate: { 850: '#151e2e' }
+                    },
+                    boxShadow: {
+                        'glow': '0 0 20px rgba(102, 252, 241, 0.15)',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;700&family=Space+Grotesk:wght@500;700&display=swap');
+        
+        body {
+            background-color: #0B0C10;
+            color: #C5C6C7;
+            background-image: radial-gradient(#1f2833 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+
+        /* Utilidades de Diseño */
+        .bento-card {
+            background: rgba(31, 40, 51, 0.6);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .bento-card:hover {
+            border-color: rgba(102, 252, 241, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 40px -10px rgba(0,0,0,0.5);
+        }
+
+        .range-slider {
+            -webkit-appearance: none;
+            height: 4px;
+            background: #2d3748;
+            border-radius: 2px;
+            outline: none;
+        }
+        .range-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 16px;
+            height: 16px;
+            background: #66FCF1;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(102, 252, 241, 0.5);
+            transition: transform 0.2s;
+        }
+        .range-slider::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+        }
+
+        .metric-value {
+            font-feature-settings: "tnum" on, "lnum" on;
+        }
+        
+        /* Animación de carga sutil */
+        @keyframes pulse-subtle {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        .animate-pulse-slow {
+            animation: pulse-subtle 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+    </style>
+</head>
+<body class="antialiased selection:bg-cyan selection:text-obsidian">
+
+    <!-- Header Profesional -->
+    <nav class="fixed w-full z-50 bg-obsidian/90 backdrop-blur-md border-b border-white/5">
+        <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="h-8 w-8 bg-cyan text-obsidian rounded flex items-center justify-center font-display font-bold text-lg">AI</div>
+                <div>
+                    <h1 class="font-display font-bold text-white text-sm tracking-wide">CONSUMO ELÉCTRICO</h1>
+                    <p class="text-[10px] text-cyan-dim font-mono tracking-wider">PROYECTO DE INVESTIGACIÓN</p>
+                </div>
+            </div>
+            <div class="hidden md:flex items-center gap-8 text-xs font-medium tracking-wide text-gray-400">
+                <div class="flex items-center gap-2">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                    <span>SISTEMA ONLINE</span>
+                </div>
+                <div class="text-right">
+                    <p class="text-white">UAC 2026-1</p>
+                    <p class="text-[10px] opacity-60">FACULTAD DE INGENIERÍA</p>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Contenido Principal -->
+    <main class="pt-24 pb-12 px-6 max-w-7xl mx-auto">
+        
+        <!-- Sección de Título -->
+        <header class="mb-16 text-center lg:text-left lg:flex justify-between items-end border-b border-white/5 pb-8">
+            <div class="max-w-3xl">
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan/10 border border-cyan/20 text-cyan text-xs font-mono mb-6">
+                    <i class="fas fa-code-branch"></i> COMPARATIVA V1.0.4
+                </div>
+                <h2 class="text-4xl lg:text-6xl font-display font-bold text-white mb-4 leading-tight">
+                    Modelado <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan to-blue-500">Determinista</span> vs. <span class="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-500">Estocástico</span>
+                </h2>
+                <p class="text-lg text-gray-400 font-light leading-relaxed">
+                    Un análisis técnico de la precisión en la predicción de carga energética utilizando algoritmos lineales tradicionales frente a redes neuronales profundas (TensorFlow).
+                </p>
+            </div>
+            
+            <!-- Tarjeta de Créditos Rápida -->
+            <div class="mt-8 lg:mt-0 text-right hidden lg:block">
+                <div class="text-sm text-gray-400 mb-1">Equipo de Investigación</div>
+                <div class="font-display font-bold text-white text-lg">VIVA EL APRA</div>
+                <div class="text-xs text-cyan-dim font-mono mt-2">DOCENTE: MG. ING. HUGO ESPETIA</div>
+            </div>
+        </header>
+
+        <!-- Grid Bento - Conceptos -->
+        <section class="grid md:grid-cols-2 gap-6 mb-12">
+            <!-- Card 1: Tradicional -->
+            <div class="bento-card p-8 group relative overflow-hidden">
+                <div class="absolute top-0 right-0 p-6 opacity-10 group-hover:opacity-20 transition-opacity">
+                    <i class="fas fa-calculator text-8xl"></i>
+                </div>
+                <h3 class="font-display text-2xl text-white mb-2">Enfoque Tradicional</h3>
+                <div class="h-1 w-12 bg-blue-500 mb-6"></div>
+                <p class="text-sm text-gray-400 mb-6 leading-relaxed">
+                    Basado en una arquitectura rígida y reglas predefinidas. Ideal para entornos estáticos, pero falla ante la variabilidad del mundo real.
+                </p>
+                <div class="bg-black/30 rounded p-4 border-l-2 border-blue-500 font-mono text-xs text-blue-300">
+                    $$C = N_{ap} \times H_{uso} \times f_{costo} \times 30$$
+                </div>
+            </div>
+
+            <!-- Card 2: IA -->
+            <div class="bento-card p-8 group relative overflow-hidden">
+                <div class="absolute top-0 right-0 p-6 opacity-10 group-hover:opacity-20 transition-opacity">
+                    <i class="fas fa-brain text-8xl"></i>
+                </div>
+                <h3 class="font-display text-2xl text-white mb-2">Machine Learning</h3>
+                <div class="h-1 w-12 bg-purple-500 mb-6"></div>
+                <p class="text-sm text-gray-400 mb-6 leading-relaxed">
+                    Utiliza descenso de gradiente para minimizar una función de coste (MSE). El sistema "aprende" pesos ($W$) y sesgos ($b$) dinámicos.
+                </p>
+                <div class="bg-black/30 rounded p-4 border-l-2 border-purple-500 font-mono text-xs text-purple-300">
+                    $$Y = \sigma(W \cdot X + b)$$
+                </div>
+            </div>
+        </section>
+
+        <!-- Dashboard Interactivo -->
+        <div class="bento-card p-1"> <!-- Borde contenedor -->
+            <div class="bg-slate-850 rounded-xl overflow-hidden">
+                
+                <!-- Barra de Herramientas -->
+                <div class="px-6 py-4 border-b border-white/5 bg-black/20 flex justify-between items-center">
+                    <div class="flex items-center gap-4">
+                        <span class="text-xs font-mono text-cyan-dim"><i class="fas fa-terminal mr-2"></i>SIMULADOR_V2.EXEC</span>
+                    </div>
+                    <button id="trainBtn" onclick="startTraining()" class="group relative px-6 py-2 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold tracking-wider uppercase rounded transition-all overflow-hidden">
+                        <span class="relative z-10 flex items-center gap-2">
+                            <i class="fas fa-sync-alt"></i> Iniciar Entrenamiento
+                        </span>
+                        <div class="absolute inset-0 bg-white/10 translate-y-full group-hover:translate-y-0 transition-transform"></div>
+                    </button>
+                </div>
+
+                <div class="grid lg:grid-cols-12 min-h-[500px]">
+                    
+                    <!-- Panel Izquierdo: Controles -->
+                    <div class="lg:col-span-3 p-8 border-r border-white/5 bg-black/10 flex flex-col justify-between">
+                        <div class="space-y-8">
+                            <div>
+                                <label class="flex justify-between text-xs font-bold text-gray-400 uppercase tracking-wider mb-4">
+                                    Electrodomésticos ($X_1$)
+                                    <span id="valAparatos" class="text-cyan">5</span>
+                                </label>
+                                <input type="range" id="inputAparatos" min="1" max="25" value="5" class="range-slider w-full">
+                            </div>
+                            
+                            <div>
+                                <label class="flex justify-between text-xs font-bold text-gray-400 uppercase tracking-wider mb-4">
+                                    Horas de Uso ($X_2$)
+                                    <span id="valHoras" class="text-purple-400">4h</span>
+                                </label>
+                                <input type="range" id="inputHoras" min="1" max="24" value="4" class="range-slider w-full !bg-purple-900">
+                            </div>
+                        </div>
+
+                        <!-- Mini Panel de Status -->
+                        <div class="mt-8 pt-8 border-t border-white/5">
+                            <h4 class="text-[10px] text-gray-500 uppercase tracking-widest mb-4">Estado del Modelo</h4>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div class="bg-black/40 p-3 rounded border border-white/5">
+                                    <div class="text-[10px] text-gray-500 mb-1">EPOCHS</div>
+                                    <div id="epochDisplay" class="text-sm font-mono text-white">0</div>
+                                </div>
+                                <div class="bg-black/40 p-3 rounded border border-white/5">
+                                    <div class="text-[10px] text-gray-500 mb-1">LOSS (MSE)</div>
+                                    <div id="lossDisplay" class="text-sm font-mono text-red-400">-.--</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Panel Central: Visualización -->
+                    <div class="lg:col-span-6 p-8 relative flex flex-col">
+                        <h4 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-6">Proyección de Consumo (kWh)</h4>
+                        
+                        <div class="flex-1 relative w-full h-64 lg:h-auto">
+                            <canvas id="mainChart"></canvas>
+                            
+                            <!-- Overlay Bloqueado -->
+                            <div id="untrainedOverlay" class="absolute inset-0 bg-slate-850/80 backdrop-blur-sm flex flex-col items-center justify-center z-10 transition-opacity duration-500">
+                                <div class="w-16 h-16 rounded-full bg-white/5 border border-white/10 flex items-center justify-center mb-4 animate-pulse-slow">
+                                    <i class="fas fa-lock text-gray-500 text-xl"></i>
+                                </div>
+                                <p class="text-sm font-mono text-gray-300">MODELO NO INICIALIZADO</p>
+                                <p class="text-xs text-gray-600 mt-2 max-w-xs text-center">Ejecute el entrenamiento para calibrar los pesos de la red neuronal.</p>
+                            </div>
+                        </div>
+
+                        <!-- Gráfica Secundaria (Loss) -->
+                        <div class="h-24 mt-6 border-t border-white/5 pt-4">
+                            <canvas id="lossChart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Panel Derecho: Resultados -->
+                    <div class="lg:col-span-3 p-8 bg-black/10 border-l border-white/5 flex flex-col justify-center">
+                        <div class="space-y-10">
+                            <!-- Resultado Tradicional -->
+                            <div>
+                                <div class="flex items-center gap-2 mb-2">
+                                    <div class="w-2 h-2 rounded-full bg-blue-500"></div>
+                                    <h5 class="text-xs font-bold text-gray-400 uppercase">Tradicional</h5>
+                                </div>
+                                <div class="text-4xl font-display font-bold text-white metric-value tracking-tight">
+                                    <span id="resTradicional">0.00</span>
+                                    <span class="text-sm text-gray-600 ml-1">kWh</span>
+                                </div>
+                            </div>
+
+                            <!-- Resultado IA -->
+                            <div class="relative">
+                                <div class="flex items-center gap-2 mb-2">
+                                    <div class="w-2 h-2 rounded-full bg-purple-500 animate-pulse"></div>
+                                    <h5 class="text-xs font-bold text-purple-400 uppercase">Predicción IA</h5>
+                                </div>
+                                <div class="text-4xl font-display font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400 metric-value tracking-tight">
+                                    <span id="resIA">---</span>
+                                    <span class="text-sm text-gray-600 ml-1">kWh</span>
+                                </div>
+                                
+                                <!-- Delta Indicator -->
+                                <div id="deltaBadge" class="mt-3 inline-flex items-center gap-1.5 px-2 py-1 rounded bg-white/5 border border-white/10 opacity-0 transition-opacity">
+                                    <i class="fas fa-chart-line text-[10px] text-gray-400"></i>
+                                    <span class="text-[10px] text-gray-400 font-mono">Factor: <span id="weightDisplay" class="text-white">---</span></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Tabla Comparativa -->
+        <section class="mt-12 grid lg:grid-cols-3 gap-6">
+            <div class="bento-card p-6">
+                <div class="text-xs font-bold text-gray-500 uppercase mb-4">Adaptabilidad</div>
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-sm text-gray-300">Tradicional</span>
+                    <div class="flex gap-1"><div class="w-2 h-2 bg-blue-500 rounded-full"></div><div class="w-2 h-2 bg-gray-700 rounded-full"></div><div class="w-2 h-2 bg-gray-700 rounded-full"></div></div>
+                </div>
+                <div class="flex items-center justify-between">
+                    <span class="text-sm text-gray-300">TensorFlow</span>
+                    <div class="flex gap-1"><div class="w-2 h-2 bg-purple-500 rounded-full"></div><div class="w-2 h-2 bg-purple-500 rounded-full"></div><div class="w-2 h-2 bg-purple-500 rounded-full"></div></div>
+                </div>
+            </div>
+            
+            <div class="bento-card p-6">
+                <div class="text-xs font-bold text-gray-500 uppercase mb-4">Costo Computacional</div>
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-sm text-gray-300">Tradicional</span>
+                    <div class="flex gap-1"><div class="w-2 h-2 bg-blue-500 rounded-full"></div><div class="w-2 h-2 bg-gray-700 rounded-full"></div><div class="w-2 h-2 bg-gray-700 rounded-full"></div></div>
+                </div>
+                <div class="flex items-center justify-between">
+                    <span class="text-sm text-gray-300">TensorFlow</span>
+                    <div class="flex gap-1"><div class="w-2 h-2 bg-purple-500 rounded-full"></div><div class="w-2 h-2 bg-purple-500 rounded-full"></div><div class="w-2 h-2 bg-gray-700 rounded-full"></div></div>
+                </div>
+            </div>
+
+            <div class="bento-card p-6 flex flex-col justify-center text-center">
+                <p class="text-sm text-gray-400 italic">"El modelo estocástico reduce el error de predicción en entornos con alta varianza de uso."</p>
+                <div class="mt-4 pt-4 border-t border-white/5 text-xs text-gray-500 font-mono">CONCLUSIÓN DEL ESTUDIO</div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer Académico -->
+    <footer class="border-t border-white/5 bg-black/40 py-12">
+        <div class="max-w-7xl mx-auto px-6 text-center lg:text-left grid md:grid-cols-4 gap-8 text-sm text-gray-500">
+            <div class="col-span-2">
+                <h4 class="text-white font-bold mb-4">Referencias Bibliográficas</h4>
+                <ul class="space-y-2 font-mono text-xs">
+                    <li>[1] Goodfellow, I. et al. (2016). <em>Deep Learning</em>. MIT Press.</li>
+                    <li>[2] Cho, S. (2022). <em>Electric Load Forecasting</em>. Energies Journal.</li>
+                    <li>[3] TensorFlow Core. (2024). <em>Adam Optimizer Documentation</em>.</li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="text-white font-bold mb-4">Tecnologías</h4>
+                <ul class="space-y-2">
+                    <li>HTML5 / CSS3 (Tailwind)</li>
+                    <li>JavaScript (ES6+)</li>
+                    <li>Chart.js Visualization</li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="text-white font-bold mb-4">Equipo</h4>
+                <p>Atayupanqui Sanz</p>
+                <p>Machaca Huillca</p>
+                <p>Ochoa Martinez</p>
+            </div>
+        </div>
+        <div class="max-w-7xl mx-auto px-6 mt-12 pt-8 border-t border-white/5 text-center text-xs font-mono opacity-50">
+            &copy; 2026 UNIVERSIDAD ANDINA DEL CUSCO. TODOS LOS DERECHOS RESERVADOS.
+        </div>
+    </footer>
+
+    <script>
+        // --- CONFIGURACIÓN DE GRÁFICAS Y LÓGICA ---
+        
+        // Estilos Globales ChartJS para Dark Mode
+        Chart.defaults.color = '#64748b';
+        Chart.defaults.borderColor = 'rgba(255, 255, 255, 0.05)';
+        Chart.defaults.font.family = "'Inter', sans-serif";
+
+        const els = {
+            inputAparatos: document.getElementById('inputAparatos'),
+            inputHoras: document.getElementById('inputHoras'),
+            valAparatos: document.getElementById('valAparatos'),
+            valHoras: document.getElementById('valHoras'),
+            resTrad: document.getElementById('resTradicional'),
+            resIA: document.getElementById('resIA'),
+            epoch: document.getElementById('epochDisplay'),
+            loss: document.getElementById('lossDisplay'),
+            weight: document.getElementById('weightDisplay'),
+            deltaBadge: document.getElementById('deltaBadge'),
+            overlay: document.getElementById('untrainedOverlay'),
+            trainBtn: document.getElementById('trainBtn')
+        };
+
+        let modelTrained = false;
+        let trainingInterval;
+
+        // --- 1. GRÁFICA PRINCIPAL ---
+        const ctxMain = document.getElementById('mainChart').getContext('2d');
+        const mainGradient = ctxMain.createLinearGradient(0, 0, 0, 300);
+        mainGradient.addColorStop(0, 'rgba(102, 252, 241, 0.2)');
+        mainGradient.addColorStop(1, 'rgba(102, 252, 241, 0)');
+
+        const iaGradient = ctxMain.createLinearGradient(0, 0, 0, 300);
+        iaGradient.addColorStop(0, 'rgba(168, 85, 247, 0.2)');
+        iaGradient.addColorStop(1, 'rgba(168, 85, 247, 0)');
+
+        const mainChart = new Chart(ctxMain, {
+            type: 'bar',
+            data: {
+                labels: ['Carga Estimada'],
+                datasets: [
+                    {
+                        label: 'Tradicional',
+                        data: [0],
+                        backgroundColor: '#3b82f6',
+                        hoverBackgroundColor: '#60a5fa',
+                        barPercentage: 0.5,
+                        borderRadius: 4
+                    },
+                    {
+                        label: 'TensorFlow',
+                        data: [0],
+                        backgroundColor: '#a855f7',
+                        hoverBackgroundColor: '#c084fc',
+                        barPercentage: 0.5,
+                        borderRadius: 4
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: true, position: 'top', align: 'end', labels: { boxWidth: 10, usePointStyle: true } },
+                    tooltip: {
+                        backgroundColor: 'rgba(11, 12, 16, 0.9)',
+                        titleColor: '#fff',
+                        bodyColor: '#cbd5e1',
+                        borderColor: 'rgba(255,255,255,0.1)',
+                        borderWidth: 1,
+                        padding: 10,
+                        displayColors: false,
+                    }
+                },
+                scales: {
+                    y: { beginAtZero: true, grid: { borderDash: [4, 4] } },
+                    x: { display: false }
+                }
+            }
+        });
+
+        // --- 2. GRÁFICA DE LOSS ---
+        const ctxLoss = document.getElementById('lossChart').getContext('2d');
+        const lossChart = new Chart(ctxLoss, {
+            type: 'line',
+            data: {
+                labels: [],
+                datasets: [{
+                    data: [],
+                    borderColor: '#ef4444',
+                    borderWidth: 1.5,
+                    pointRadius: 0,
+                    tension: 0.4,
+                    fill: false
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false }, tooltip: { enabled: false } },
+                scales: { x: { display: false }, y: { display: false } },
+                animation: { duration: 0 }
+            }
+        });
+
+        // --- LÓGICA ---
+        function calculate() {
+            const aparatos = parseInt(els.inputAparatos.value);
+            const horas = parseFloat(els.inputHoras.value);
+
+            els.valAparatos.innerText = aparatos;
+            els.valHoras.innerText = horas + "h";
+
+            // Tradicional: Formula fija
+            const valTrad = aparatos * horas * 0.5 * 30;
+            els.resTrad.innerText = valTrad.toFixed(2);
+            mainChart.data.datasets[0].data = [valTrad];
+
+            // IA: Formula dinámica simulada
+            if (modelTrained) {
+                // Factor no lineal que penaliza ligeramente el alto consumo (simulando ineficiencia térmica)
+                const w = 0.52 + (Math.log(aparatos) * 0.015); 
+                const b = 4.5; // Bias base
+                
+                const valIA = (aparatos * horas * w * 30) + b;
+                
+                els.resIA.innerText = valIA.toFixed(2);
+                els.weight.innerText = w.toFixed(4);
+                mainChart.data.datasets[1].data = [valIA];
+            }
+
+            mainChart.update();
+        }
+
+        function startTraining() {
+            if (trainingInterval) return;
+
+            // Reset UI
+            modelTrained = false;
+            els.trainBtn.disabled = true;
+            els.trainBtn.classList.add('opacity-50', 'cursor-not-allowed');
+            els.trainBtn.innerHTML = '<span class="flex items-center gap-2"><i class="fas fa-cog fa-spin"></i> Optimizando...</span>';
+            
+            // Animación Loss
+            lossChart.data.labels = [];
+            lossChart.data.datasets[0].data = [];
+            
+            let epoch = 0;
+            const totalEpochs = 60;
+            let currentLoss = 2.0;
+
+            trainingInterval = setInterval(() => {
+                epoch++;
+                
+                // Función de decaimiento simulada
+                currentLoss = currentLoss * 0.92 + (Math.random() * 0.02);
+                
+                els.epoch.innerText = epoch;
+                els.loss.innerText = currentLoss.toFixed(4);
+
+                lossChart.data.labels.push(epoch);
+                lossChart.data.datasets[0].data.push(currentLoss);
+                lossChart.update();
+
+                if (epoch >= totalEpochs) {
+                    clearInterval(trainingInterval);
+                    trainingInterval = null;
+                    finishTraining();
+                }
+            }, 40);
+        }
+
+        function finishTraining() {
+            modelTrained = true;
+            els.overlay.classList.add('opacity-0', 'pointer-events-none');
+            els.deltaBadge.classList.remove('opacity-0');
+            
+            els.trainBtn.innerHTML = '<span class="flex items-center gap-2 text-emerald-300"><i class="fas fa-check"></i> Optimizado</span>';
+            els.trainBtn.classList.remove('bg-indigo-600', 'hover:bg-indigo-500');
+            els.trainBtn.classList.add('bg-emerald-900', 'border', 'border-emerald-500');
+            
+            calculate();
+        }
+
+        // Eventos
+        els.inputAparatos.addEventListener('input', calculate);
+        els.inputHoras.addEventListener('input', calculate);
+
+        // Init
+        calculate();
+
+    </script>
+</body>
+</html>

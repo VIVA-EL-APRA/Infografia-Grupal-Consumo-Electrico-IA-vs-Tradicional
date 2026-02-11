@@ -1,0 +1,1 @@
+# Infografia-Grupal-Consumo-Electrico-IA-vs-Tradicional
